@@ -1,0 +1,28 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "options": {
+        "cwd": "${workspaceRoot}/build"
+    },
+    "tasks": [
+        {
+            "label": "start ST-Util",
+            "type": "shell",
+            "command": "st-util",
+            "problemMatcher": []
+        },
+        {
+            "label": "Flash ST-Link",
+            "type": "shell",
+            "command": "make flash",
+            "problemMatcher": []
+        },
+        {
+            "label": "Erase ST-Link",
+            "type": "shell",
+            "command": "make erase",
+            "problemMatcher": []
+        }
+    ]
+}
