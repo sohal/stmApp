@@ -7,20 +7,20 @@
 
 /* ***************** Header / include files ( #include ) **********************/
 #include "Spi1.h"
-#include "Gpio.h"
-
+#if defined (SELECT_SPI)
 /* *************** Constant / macro definitions ( #define ) *******************/
 /* ********************* Type definitions ( typedef ) *************************/
 /* *********************** Global data definitions ****************************/
 /* **************** Global constant definitions ( const ) *********************/
 /* ***************** Modul global data segment ( static ) *********************/
-static uint8_t firstByte;
-static uint8_t firstByteRead;
-
+static uint16_t index = 0U;
+// static uint32_t TxPin = 0UL;
+// static uint32_t RxPin = 0UL;
+// static uint32_t ClkPin = 0UL;
+// static uint32_t NssPin = 0UL;
+// static GPIO_TypeDef *pGPIO_SPI1 = NULL;
 /* *************** Modul global constants ( static const ) ********************/
 /* **************** Local func/proc prototypes ( static ) *********************/
-static void Spi1Delay160us(void);
-
 /******************************************************************************/
 /**
 * void Spi1Init(void)
@@ -28,7 +28,7 @@ static void Spi1Delay160us(void);
 *        initialze variables.
 *
 *******************************************************************************/
-void Spi1Init(void)
+void Spi1Init(tBSPType BSPType)
 {
     RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 
@@ -74,14 +74,11 @@ void Spi1Init(void)
     SPI1->CR1 |= SPI_CR1_SPE;
     SPI1->CR1 |= SPI_CR1_CPHA;
     SPI1->CR1 |= SPI_CR1_CPOL;
-
-    firstByte = 0;
-    firstByteRead = 0;
 }
 
 /******************************************************************************/
 /**
-* eFUNCTION_RETURN Spi1Transmit(uint8_t *pTxData, uint16_t size)
+* void Spi1Send(uint8_t *pTxData, uint16_t size);
 * @brief Implement SPI1 send. 1s timeout if nothing is received for transmitting.
 *
 * @param[in] pTxData pointer to the data to be transmitted
@@ -91,36 +88,14 @@ void Spi1Init(void)
 *            eFunction_Timeout if an timeout error occurs.
 *
 *******************************************************************************/
-eFUNCTION_RETURN Spi1Transmit(uint8_t *pTxData, uint16_t size)
+void Spi1Send(uint8_t *pTxData, uint16_t size)
 {
-    uint8_t tmp;
-    uint16_t sizeLoc = size;
-    uint32_t i = 0;
-    eFUNCTION_RETURN ret;
-    while(size-- > 0)
+    uint16_t i = 0U;
+    while(i < size)
     {
         while((SPI1->SR & SPI_SR_TXE) == 0);
-        *(uint8_t *)&(SPI1->DR) = (uint8_t)*pTxData++;
+        *(uint8_t *)&(SPI1->DR) = pTxData[i++];
     }
-    while((i++ < TIMEOUT_1s) && ((SPI1->SR & SPI_SR_FTLVL) != 0));
-    /* The  goes to 0 after the first bit of the last byte is
-     * send out, so we need to wait another 7 bits plus the time
-     * till CS goes high. This takes 160 us with SPI bit rate 100000.   */
-    Spi1Delay160us();
-    while (sizeLoc-- > 0) // flush Rx FIFO as it was filled with dummy data for Tx.
-    {      
-        tmp = SPI1->DR;
-        tmp = SPI1->SR;
-    }
-    if((SPI1->SR & SPI_SR_FTLVL) == 0)
-    {
-        ret = eFunction_Ok;
-    }
-    else
-    {
-        ret = eFunction_Timeout;
-    }
-    return ret;
 }
 
 /******************************************************************************/
@@ -136,94 +111,42 @@ eFUNCTION_RETURN Spi1Transmit(uint8_t *pTxData, uint16_t size)
 *             eFunction_Error if timeout error occurs.
 *
 *******************************************************************************/
-eFUNCTION_RETURN Spi1Receive(uint8_t *pRxData, uint16_t size)
+eFUNCTION_RETURN Spi1Recv(uint8_t *pRxData, uint16_t size)
 {
-    uint8_t tmp;
-    uint16_t sizeLoc = size;
-    uint8_t *pRxDataLoc = pRxData;
-    uint8_t retryCnt = 0; // retry counter, if it reachs 3, return timeout
-    uint8_t DataReceived = 0;
-    if(firstByteRead)
-    {
-        *pRxDataLoc = firstByte;
-        pRxDataLoc++;
-        sizeLoc--;
-        size--;
-        pRxData++;
-        firstByteRead = 0;
-        DataReceived = 1;
-    }
-    while(sizeLoc > 0)
-    {
-        uint32_t i = 0;        
-        while((i++ < PACKET_TIMEOUT_SPI_MS) && ((SPI1->SR & SPI_SR_RXNE) == 0));
-        if ((SPI1->SR & SPI_SR_RXNE) != 0)
-        {
-            *pRxDataLoc = SPI1->DR;
-            pRxDataLoc++;
-            retryCnt = 0;
-            sizeLoc--;
-            DataReceived = 1;
-        }
-        else
-        {
-            sizeLoc = size;
-            pRxDataLoc = pRxData;
-            tmp = SPI1->DR; // clear overrun flag
-            tmp = SPI1->SR; // clear overrun flag
-            if(retryCnt++ >= 3)
-            {
-                if (DataReceived)
-                {
-                    // data lost
-                    return eFunction_Error;
-                }
-                else
-                {          
-                    // polling timeout
-                    return eFunction_Timeout;
-                }
-            }
-        }
-    }
-    return eFunction_Ok;
-}
+    eFUNCTION_RETURN retVal = eFunction_Timeout;
+    uint8_t tmp = 0;
 
-/******************************************************************************/
-/**
-* uint8_t Spi1ByteReceived(void)
-*
-* @brief Check if there is any data on bus. Read the first byte out.
-*
-* @returns    1 if there is a byte on bus.
-*             or
-*             0 if there is nothing.
-*
-*******************************************************************************/
-uint8_t Spi1ByteReceived(void)
-{
-    uint8_t ret;  
     if(SPI1->SR & SPI_SR_RXNE)
     {
-        firstByte = SPI1->DR;
-        firstByteRead = 1;
-        ret = 1;
+        if ((SPI1->SR & SPI_SR_RXNE) != 0)
+        {
+            pRxData[index] = SPI1->DR;
+            index++;
+        }else
+        {
+            tmp = SPI1->DR; // clear data flag
+            tmp = SPI1->SR; // clear overrun flag
+        }
     }
-    else
+    (void)tmp;    
+    if(index >= size)
     {
-        ret = 0;
+        index = 0;
+        retVal = eFunction_Ok;
     }
-    return ret;
+    return retVal;
 }
 
 /******************************************************************************/
 /**
-* static void Spi1Delay160us(void)
+* void Spi1Reset(void);
 *
 * @brief Function to delay about 160 us.
 *
 *******************************************************************************/
-static void Spi1Delay160us(void)
+void Spi1Reset(void)
 {
-    for(uint16_t i = 0; i < 160u; i++){}
+    index = 0;
 }
+
+#endif

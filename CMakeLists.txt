@@ -17,7 +17,7 @@ set ( SOURCES
     "${CMAKE_SOURCE_DIR}/CRC.c"
     "${CMAKE_SOURCE_DIR}/Flash.c"
     "${CMAKE_SOURCE_DIR}/Protocol.c"
-    #"${CMAKE_SOURCE_DIR}/Spi1.c"
+    "${CMAKE_SOURCE_DIR}/Spi1.c"
     "${CMAKE_SOURCE_DIR}/Usart1.c"
     "${CMAKE_SOURCE_DIR}/1.5.0/Device/Source/system_stm32f0xx.c"
 )
@@ -65,7 +65,7 @@ add_executable(
 # target specific options
 target_compile_definitions(
     ${PROJECT_NAME}
-    PRIVATE -DSELECT_PILOT -DSTM32F072xB
+    PRIVATE -DSELECT_SPI -DSTM32F072xB
 )
 
 target_compile_definitions(
@@ -82,7 +82,7 @@ target_compile_definitions(
 )
 target_compile_definitions(
     bootSPI
-    PRIVATE -DSELECT_PILOT -DSTM32F031x6
+    PRIVATE -DSELECT_SPI -DSTM32F031x6
 )
 # Print Firmware Size
 firmware_size(${PROJECT_NAME})
