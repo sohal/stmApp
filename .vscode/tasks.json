@@ -7,7 +7,7 @@
     },
     "tasks": [
         {
-            "label": "start ST-Util",
+            "label": "Debug ST-Util",
             "type": "shell",
             "command": "st-util",
             "problemMatcher": []

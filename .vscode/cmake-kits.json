@@ -1,0 +1,6 @@
+[
+    {
+        "name": "ARM EABI Cortex M0",
+        "toolchainFile": "cortexM0.cmake"
+    }
+]

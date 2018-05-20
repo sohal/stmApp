@@ -10,6 +10,7 @@
 #include "Can.h"
 #include "Flash.h"
 #include "Usart1.h"
+#include "Spi1.h"
 /* *************** Constant / macro definitions ( #define ) *******************/
 /* ********************* Type definitions ( typedef ) *************************/
 /* *********************** Global data definitions ****************************/
@@ -48,6 +49,9 @@ tBSPStruct* BSP_Init(void)
 #elif defined (SELECT_CAN)
     gIF.BSP_Type = BSP_CAN;
     #warning CAN bus selected
+#elif defined (SELECT_SPI)
+    gIF.BSP_Type = BSP_SPI;
+    #warning SPI bus selected
 #else
 /** 
 * The section below will may be used to determine the board type by dedicated GPIO  settings
@@ -113,8 +117,11 @@ tBSPStruct* BSP_Init(void)
             TorqueSensorCoreClockInit();
             break;
         
-        case BSP_ExtWatchdog:
-            // TODO implement me
+        case BSP_SPI:
+            gIF.pInit   = &Spi1Init;
+            gIF.pSend   = &Spi1Send;
+            gIF.pRecv   = &Spi1Recv;
+            gIF.pReset  = &Spi1Reset;
             break;
         
         case BSP_CAN:

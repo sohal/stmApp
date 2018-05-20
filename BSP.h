@@ -56,8 +56,8 @@
 /** Constants for interfaces */
 /** Interface Ports, Pins and configuration in Pilot for UART communication */
 #define BSP_PILOT_UART_PORT                 (GPIOA)
-#define BSP_PILOT_UART_TX_PIN               (9U)
-#define BSP_PILOT_UART_RX_PIN               (10U)
+#define BSP_PILOT_UART_TX_PIN               (2U)
+#define BSP_PILOT_UART_RX_PIN               (3U)
 #define BSP_PILOT_UART_BAUD                 (57600U)
 
 /** Interface Ports, Pins and configuration in Torque sensor for UART communication */
@@ -73,6 +73,12 @@
 #define BSP_TARGET_CAN_BAUD                 (500000U)
 #define BSP_TARGET_CAN_ID_BASE              (8U)
 
+/** Interface Ports, Pins and configuration in targets for SPI bus communications */
+#define BSP_TARGET_SPI_PORT                 (GPIOA)
+#define BSP_TARGET_SPI_TX_PIN               (7U)
+#define BSP_TARGET_SPI_TX_PIN               (7U)
+#define BSP_TARGET_SPI_TX_PIN               (7U)
+
 #define BSP_CHECK_PORT                      (GPIOA)
 #define BSP_CHECK_PIN_6                     (6U)
 #define BSP_CHECK_PIN_7                     (7U)
@@ -81,7 +87,7 @@ typedef enum bsptype {
     BSP_Unknown,
     BSP_Pilot,
     BSP_TorqueSensor,
-    BSP_ExtWatchdog,
+    BSP_SPI,
     BSP_CAN
 }tBSPType;
 
