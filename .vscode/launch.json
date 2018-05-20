@@ -1,0 +1,29 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "cwd": "${workspaceRoot}",
+            "executable": "./build/bootF072.elf",
+            "name": "Debug Microcontroller",
+            "request": "launch",
+            "type": "cortex-debug",
+            "device": "STM32F072x",
+            "svdFile": "/home/p/git/stmApp.git/SVD/STM32F072x.svd",
+            "servertype": "stutil",
+            "preLaunchTask": "Flash ST-Link",
+            "v1": false
+        },
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "./build/bootF072.elf",
+            "request": "launch",
+            "type": "cortex-debug",
+            "svdFile": "./SVD/STM32F072x.svd",
+            "servertype": "jlink"
+        }
+    ]
+}

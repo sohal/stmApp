@@ -72,8 +72,8 @@ void Spi1Init(tBSPType BSPType)
 
     SPI1->CR2 = SPI_CR2_FRXTH | SPI_CR2_DS_2 | SPI_CR2_DS_1 | SPI_CR2_DS_0; // read 8 bit working
     SPI1->CR1 |= SPI_CR1_SPE;
-    SPI1->CR1 |= SPI_CR1_CPHA;
-    SPI1->CR1 |= SPI_CR1_CPOL;
+    // SPI1->CR1 |= SPI_CR1_CPHA;
+    // SPI1->CR1 |= SPI_CR1_CPOL;
 }
 
 /******************************************************************************/
@@ -91,10 +91,11 @@ void Spi1Init(tBSPType BSPType)
 void Spi1Send(uint8_t *pTxData, uint16_t size)
 {
     uint16_t i = 0U;
+
     while(i < size)
     {
         while((SPI1->SR & SPI_SR_TXE) == 0);
-        *(uint8_t *)&(SPI1->DR) = pTxData[i++];
+        SPI1->DR = pTxData[i++];
     }
 }
 

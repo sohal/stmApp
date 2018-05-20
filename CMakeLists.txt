@@ -1,12 +1,12 @@
 # The CMake minimum version
 cmake_minimum_required(VERSION 3.5)
 # Include utilities
-include(/home/p/.cmake/utils.cmake)
+include("${CMAKE_SOURCE_DIR}/utils.cmake")
 # The name of the project
 project( bootF072 ASM C )
 
 # Add library for stm32peripherals
-set (CMAKE_EXECUTABLE_SUFFIX ".axf")
+set (CMAKE_EXECUTABLE_SUFFIX ".elf")
 
 # Sources for startup code
 set ( SOURCES 

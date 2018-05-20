@@ -46,26 +46,30 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
     switch(stateNow)
     {
         case eDefaultState:
-            if(pBSP->pRecv(Command.bufferCMD, 2) == eFunction_Ok)
+            // if(pBSP->pRecv(Command.bufferCMD, 2) == eFunction_Ok)
+            // {
+            //     if(Command.receivedvalue == eCMD_BootloadMode)
+            //     {
+            //         stateNext = eFlashEraseCMD;
+            //         tickCounter = 0;
+            //         Command.returnValue = eRES_Ready;
+            //         pBSP->pSend(Command.bufferCMD,2);
+            //     }
+            // }else
+            // {
+            //     if(tickCounter > pBSP->AppStartTicks)
+            //     {
+            //         stateNext = eFlashVerifyApplication;
+            //         tickCounter = 0;
+            //     }else
+            //     {
+            //         tickCounter++;
+            //         stateNext = eDefaultState;
+            //     }
+            // }
+            if(eFunction_Ok == pBSP->pRecv(Payload.bufferPLD, 5U))
             {
-                if(Command.receivedvalue == eCMD_BootloadMode)
-                {
-                    stateNext = eFlashEraseCMD;
-                    tickCounter = 0;
-                    Command.returnValue = eRES_Ready;
-                    pBSP->pSend(Command.bufferCMD,2);
-                }
-            }else
-            {
-                if(tickCounter > pBSP->AppStartTicks)
-                {
-                    stateNext = eFlashVerifyApplication;
-                    tickCounter = 0;
-                }else
-                {
-                    tickCounter++;
-                    stateNext = eDefaultState;
-                }
+                pBSP->pSend("Hello", 4);
             }
             break;
 
@@ -233,7 +237,7 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
         if(stickyTimer > pBSP->BootTimeoutTicks)
         {
             stateNext = eDefaultState;
-            NVIC_SystemReset();
+            //NVIC_SystemReset();
             stickyTimer = 0U;
         }
     }else
