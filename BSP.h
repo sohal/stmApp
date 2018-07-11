@@ -18,11 +18,11 @@
 #define DBGMCU_ID_F04x                      (0x00000445UL)
 #define DBGMCU_ID_F03x                      (0x00000444UL)
 
-/** Constants related to Program flash in the ÂµC */
+/** Constants related to Program flash in the µC */
 #define BSP_ABSOLUTE_FLASH_START            (0x08000000UL)  /** Start address of Program Flash */
 #define BSP_FLASH_PAGE_SIZE_BYTES           (0x400UL)       /** Page size of Program Flash in bytes */
 
-/** Constants related to SRAM in the ÂµC */
+/** Constants related to SRAM in the µC */
 #define BSP_ABSOLUTE_SRAM_START             (0x20000000UL)  /** Start address of SRAM */
 
 /** Constants related to relocation of interrupt vectors of application in SRAM */

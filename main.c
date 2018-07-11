@@ -19,7 +19,7 @@
 int main (void)
 {
     tBSPStruct* pBSP = BSP_Init();
-    
+
     for(;;)
     {
         ProtocolSM_Run(pBSP);

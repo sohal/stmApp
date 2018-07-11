@@ -9,7 +9,7 @@
 #include <stddef.h>
 #include "Usart1.h"
 #if defined (SELECT_TORQUE) || defined (SELECT_PILOT)
-    
+
 /* *************** Constant / macro definitions ( #define ) *******************/
 /* ********************* Type definitions ( typedef ) *************************/
 /* *********************** Global data definitions ****************************/
@@ -79,7 +79,7 @@ void Usart1Init(tBSPType BSPType)
     pGPIO_USART->PUPDR |= ((uint32_t)GPIO_PuPd_UP << (RxPin << 1));
 
     RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
-    USART1->BRR = __USART_BRR(SystemCoreClock, Baud);  
+    USART1->BRR = __USART_BRR(SystemCoreClock, Baud);
     USART1->CR1 = USART_CR1_TE | USART_CR1_RE | USART_CR1_UE;  // 8N1
 }
 
@@ -106,7 +106,7 @@ void Usart1Send(uint8_t *pTxData, const uint16_t size)
 /**
 * eFUNCTION_RETURN Usart1Recv(uint8_t *pRxData, uint16_t size)
 *
-* @brief Read from UART. 
+* @brief Read from UART.
 *
 * @param[out] pRxData pointer to 68 bytes data
 * @param[in]  size number of bytes
@@ -120,13 +120,13 @@ void Usart1Send(uint8_t *pTxData, const uint16_t size)
 eFUNCTION_RETURN Usart1Recv(uint8_t *pRxData, const uint16_t size)
 {
     eFUNCTION_RETURN retVal = eFunction_Timeout;
-    
+
     if(USART1->ISR & USART_ISR_RXNE)
     {
         pRxData[index] = USART1->RDR;
         index++;
     }
-    
+
     if(index >= size)
     {
         index = 0;

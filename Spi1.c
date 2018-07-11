@@ -24,7 +24,7 @@ static uint16_t index = 0U;
 /******************************************************************************/
 /**
 * void Spi1Init(void)
-* @brief Configure SPI1 (STM32F031:PA4(NSS),PA7(MOSI),PA6(MISO),PA5(SCK)) and 
+* @brief Configure SPI1 (STM32F031:PA4(NSS),PA7(MOSI),PA6(MISO),PA5(SCK)) and
 *        initialze variables.
 *
 *******************************************************************************/
@@ -129,7 +129,7 @@ eFUNCTION_RETURN Spi1Recv(uint8_t *pRxData, uint16_t size)
             tmp = SPI1->SR; // clear overrun flag
         }
     }
-    (void)tmp;    
+    (void)tmp;
     if(index >= size)
     {
         index = 0;

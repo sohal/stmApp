@@ -30,7 +30,7 @@ void FlashInit(tBSPType BSPType)
         FlashSettings.CRCinFlash = BSP_ABSOLUTE_FLASH_END_16KB - 4UL;
         FlashSettings.LENinFlash = BSP_ABSOLUTE_FLASH_END_16KB - 2UL;
         FlashSettings.TOTALPages = BSP_APP_PROGRAM_PAGES_16KB;
-    }else 
+    }else
     {
         FlashSettings.CRCinFlash = BSP_ABSOLUTE_FLASH_END_32KB - 4UL;
         FlashSettings.LENinFlash = BSP_ABSOLUTE_FLASH_END_32KB - 2UL;
@@ -55,7 +55,7 @@ uint8_t FlashWrite(uint8_t* buf, const uint16_t size, const uint16_t pktNo)
 {
     uint16_t i = 0;
     uint32_t flashWait = BootTIMEOUT;
-    uint16_t* p16 = (uint16_t *)(BSP_ABSOLUTE_APP_START + (pktNo * size));  
+    uint16_t* p16 = (uint16_t *)(BSP_ABSOLUTE_APP_START + (pktNo * size));
     /**
      *    Size should be a non zero number less than 1025 and should be a multiple
      *     of two since we write 2 bytes.
@@ -66,12 +66,12 @@ uint8_t FlashWrite(uint8_t* buf, const uint16_t size, const uint16_t pktNo)
     }
     // Program Flash Page
     FLASH->SR |= FLASH_SR_PGERR | FLASH_SR_WRPRTERR;
-    while(i < size) 
+    while(i < size)
     {
         FLASH->CR |= FLASH_CR_PG;
         *p16++ = (uint16_t)(buf[i+1] << 8) | buf[i];
         /* Reload the busy wait timeout */
-        flashWait = BootTIMEOUT;  
+        flashWait = BootTIMEOUT;
         while((FLASH->SR & FLASH_SR_BSY) != 0)
         {
             if(!(flashWait--))
@@ -91,7 +91,7 @@ uint8_t FlashWrite(uint8_t* buf, const uint16_t size, const uint16_t pktNo)
     /** Lets verify flash if we have written correctly */
     i = 0;
     p16 = (uint16_t *)(BSP_ABSOLUTE_APP_START + (pktNo * size));
-    while(i < size) 
+    while(i < size)
     {
         if(*p16++ != ((uint16_t)(buf[i+1] << 8) | buf[i]))
         {
@@ -116,7 +116,7 @@ uint8_t FlashErase(void)
 {
     uint32_t flashWait = BootTIMEOUT;
     uint32_t flashAdr = (uint32_t)BSP_ABSOLUTE_APP_START;
-    
+
     // Unlock Flash
     FLASH->KEYR = FLASH_KEY1;
     FLASH->KEYR = FLASH_KEY2;
@@ -167,7 +167,7 @@ void FlashLock(void)
 /******************************************************************************/
 /**
 * uint8_t FlashWriteFWParam(tFIRMWARE_PARAM fwParam)
-* @brief Write 4 bytes firmware parameters (i.e. FW crc and length) to a fixed 
+* @brief Write 4 bytes firmware parameters (i.e. FW crc and length) to a fixed
 *        Flash address.
 *
 * @param[in] fwParam firmware parameters to be written to flash
@@ -215,7 +215,7 @@ uint8_t FlashWriteFWParam(tFIRMWARE_PARAM fwParam)
         FLASH->SR |= FLASH_SR_PGERR | FLASH_SR_WRPRTERR;
         return 0;
     }
-        
+
     /** Now start verification immidiately */
     ad = (uint16_t*)FlashSettings.CRCinFlash;
     if(*ad != fwParam.u16FWCRC)
@@ -233,7 +233,7 @@ uint8_t FlashWriteFWParam(tFIRMWARE_PARAM fwParam)
 /******************************************************************************/
 /**
 * uint8_t FlashVerifyFirmware(void)
-* @brief Verify firmware in Flash by comparing the stored crc with the 
+* @brief Verify firmware in Flash by comparing the stored crc with the
 *        calculated crc.
 *
 * @returns   1 if matches
@@ -259,7 +259,7 @@ uint8_t FlashVerifyFirmware(void)
     }
 
     /* Calculate local crc */
-    while(i < lenFromHost) 
+    while(i < lenFromHost)
     {
         /* Read from address of the firmware and calculate crc */
         dataByte = *fwar++;

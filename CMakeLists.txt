@@ -5,12 +5,14 @@ include("${CMAKE_SOURCE_DIR}/utils.cmake")
 # The name of the project
 project( bootF072 ASM C )
 
+# The VERA++ with CMAKE
+find_package(vera++)
+
 # Add library for stm32peripherals
 set (CMAKE_EXECUTABLE_SUFFIX ".elf")
 
-# Sources for startup code
-set ( SOURCES 
-    "${CMAKE_SOURCE_DIR}/Device/startup_stm32f0xx.s"
+# Sources created by me
+set ( BOOT_SRCS
     "${CMAKE_SOURCE_DIR}/main.c"
     "${CMAKE_SOURCE_DIR}/BSP.c"
     "${CMAKE_SOURCE_DIR}/Can.c"
@@ -19,6 +21,12 @@ set ( SOURCES
     "${CMAKE_SOURCE_DIR}/Protocol.c"
     "${CMAKE_SOURCE_DIR}/Spi1.c"
     "${CMAKE_SOURCE_DIR}/Usart1.c"
+)
+
+# All source files to be compiled along with startup code
+set ( SOURCES 
+    "${BOOT_SRCS}"
+    "${CMAKE_SOURCE_DIR}/Device/startup_stm32f0xx.s"
     "${CMAKE_SOURCE_DIR}/1.5.0/Device/Source/system_stm32f0xx.c"
 )
 
@@ -40,25 +48,20 @@ set (LINKERPATH     "${CMAKE_SOURCE_DIR}/Device/ldscripts"   )
 set (CMAKE_EXE_LINKER_FLAGS " -L${LINKERPATH} -Tstm32f0.ld")
 
 # Make target here
-add_executable(
-    bootPilot
+add_executable( bootPilot
     ${SOURCES}
 )
-add_executable(
-    bootTorque
+add_executable( bootTorque
     ${SOURCES}
 )
-add_executable(
-    bootCAN
+add_executable( bootCAN
     ${SOURCES}
 )
-add_executable(
-    bootSPI
+add_executable( bootSPI
     ${SOURCES}
 )
 
-add_executable(
-    ${PROJECT_NAME}
+add_executable( ${PROJECT_NAME}
     ${SOURCES}
 )
 
@@ -138,4 +141,12 @@ add_custom_target(debug
 add_custom_target(debug-server 
 	COMMAND st-util --listen_port 2331
 	DEPENDS ${PROJECT_NAME}
+)
+
+# Vera++ custom target
+include (${VERA++_USE_FILE})
+add_vera_targets(
+  ${BOOT_SRCS}
+  RECURSE
+  ROOT "/usr/local/lib/vera++/"
 )

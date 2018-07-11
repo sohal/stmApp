@@ -31,7 +31,7 @@ typedef enum
 typedef enum
 {
     eRES_Ready          = 0x0EF1, /**< Successfully switched to bootloader mode         */
-    eRES_Abort          = 0x0dF2, /**< Not recoverable error happened, only can abort   */    
+    eRES_Abort          = 0x0dF2, /**< Not recoverable error happened, only can abort   */
     eRES_OK             = 0x0CF3, /**< Last command was processed correctly             */
     eRES_Error          = 0x0BF4, /**< Last command had an error                        */
     eRES_AppCrcErr      = 0x0AF5  /**< Application CRC error                            */

@@ -42,7 +42,7 @@ tBSPStruct* BSP_Init(void)
 
 #if defined (SELECT_TORQUE)
     gIF.BSP_Type = BSP_TorqueSensor;
-    #warning Torque Sensor is selected 
+    #warning Torque Sensor is selected
 #elif defined (SELECT_PILOT)
     gIF.BSP_Type = BSP_Pilot;
     #warning Pilot is selected
@@ -53,14 +53,14 @@ tBSPStruct* BSP_Init(void)
     gIF.BSP_Type = BSP_SPI;
     #warning SPI bus selected
 #else
-/** 
+/**
 * The section below will may be used to determine the board type by dedicated GPIO  settings
 * in the hardware in future. When such a functionality is available, remove the #error below and
 * test the code with the correct GPIO pin/port settings. Until then, use targets in the project.
 */
     #error Select a valid board type
     uint32_t temp_u32 = DBGMCU->IDCODE;
-    
+
     if((temp_u32 & DBGMCU_IDCODE_DEV_ID) != DBGMCU_ID_F03x)
     {
         /* Make BSP config for F04x, Interface is always CAN */
@@ -68,7 +68,7 @@ tBSPStruct* BSP_Init(void)
     }else
     {
         /* Interface can be SPI or USART for F03x family so more investigation necessary */
-    
+
         RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
         /* Input pin 6 is made active */
         BSP_CHECK_PORT->MODER &= ~(GPIO_MODER_MODER0 << (BSP_CHECK_PIN_6 * 2));
@@ -76,11 +76,11 @@ tBSPStruct* BSP_Init(void)
         /* Input pin 6 is made active */
         BSP_CHECK_PORT->MODER &= ~(GPIO_MODER_MODER0 << (BSP_CHECK_PIN_7 * 2));
         BSP_CHECK_PORT->PUPDR &= ~(GPIO_PUPDR_PUPDR0 << (BSP_CHECK_PIN_7 * 2));
-        
+
         BSP_CHECK_PORT->ODR   &= ~((MASK_BIT_6) | (MASK_BIT_7));
-        
+
         temp_u32 = BSP_CHECK_PORT->IDR;
-        
+
         if(temp_u32 & (MASK_BIT_6))
         {
             /* Pin 6 is high only for Watchdog */
@@ -107,35 +107,35 @@ tBSPStruct* BSP_Init(void)
             gIF.pRecv   = &Usart1Recv;
             gIF.pReset  = &Usart1Reset;
             break;
-        
+
         case BSP_TorqueSensor:
             gIF.pInit   = &Usart1Init;
             gIF.pSend   = &Usart1Send;
             gIF.pRecv   = &Usart1Recv;
             gIF.pReset  = &Usart1Reset;
-            
+
             TorqueSensorCoreClockInit();
             break;
-        
+
         case BSP_SPI:
             gIF.pInit   = &Spi1Init;
             gIF.pSend   = &Spi1Send;
             gIF.pRecv   = &Spi1Recv;
             gIF.pReset  = &Spi1Reset;
             break;
-        
+
         case BSP_CAN:
             gIF.pInit   = &CanInit;
             gIF.pRecv   = &CanRecv;
             gIF.pSend   = &CanSend;
             gIF.pReset  = &CanReset;
             break;
-        
+
         default:
             // TODO implement me
             break;
     }
-  
+
     /* Let's update the global SystemCoreClock variable just in case the system
      * frequency has changed. Mandatory for calculations of delay for bootloader
      * timeouts that are solely dependent on system ticks
@@ -143,22 +143,22 @@ tBSPStruct* BSP_Init(void)
     SystemCoreClockUpdate();
     /* Now calculate by what factor has the system changed it's core clock */
     uint32_t temp_u32 = ( SystemCoreClock / BSP_ALLBOARD_HSI_FREQUENCY );
-    
+
     gIF.AppStartTicks     *= temp_u32;
     gIF.CommDoneTicks     *= temp_u32;
     gIF.BootTimeoutTicks  *= temp_u32;
     gIF.TwoBytesTicks     *= temp_u32;
-    
+
     gIF.pInit(gIF.BSP_Type);
-    
+
     FlashInit(gIF.BSP_Type);
-    
+
     return(&gIF);
 }
 /******************************************************************************/
 /**
 void TorqueSensorCoreClockInit(void)
-* @brief additional clock configuration required for matching baudrate for 
+* @brief additional clock configuration required for matching baudrate for
 * torque sensor
 *
 *******************************************************************************/
