@@ -158,5 +158,5 @@ add_vera_targets(
   ${BOOT_SRCS}
   ${BOOT_INCS}
   RECURSE
-  ROOT "${CMAKE_SOURCE_DIR}/vera++/"
+  ROOT "${CMAKE_SOURCE_DIR}/.vera++/"
 )
