@@ -2,7 +2,7 @@
 /**
 * @file Can.c
 * @brief Implement Can
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 
 /* ***************** Header / include files ( #include ) **********************/
@@ -67,11 +67,13 @@ void CanInit(tBSPType BSPType)
     /** Wait until we enter init mode */
     /** Setup busy wait timer */
     canWait = BootTIMEOUT;
-    while((CAN->MSR & CAN_MSR_INAK) == 0)
+    while ((CAN->MSR & CAN_MSR_INAK) == 0)
     {
-        if(!(canWait--))
+        canWait--;
+        if (0U == canWait)
         {
-            return;        /** Return if the busy wait timer expires todo needs a proper error code */
+            /** Return if the busy wait timer expires todo needs a proper error code */
+            return;
         }
     }
     /** Exit sleep mode */
@@ -100,9 +102,10 @@ void CanInit(tBSPType BSPType)
     /** Wait until we exit init mode */
     /** Setup busy wait timer */
     canWait = BootTIMEOUT;
-    while((CAN->MSR & CAN_MSR_INAK) != 0)
+    while ((CAN->MSR & CAN_MSR_INAK) != 0)
     {
-        if(!(canWait--))
+        canWait--;
+        if (0U == canWait)
         {
             return;        /** Return if the busy wait timer expires */
         }
@@ -123,7 +126,7 @@ void CanInit(tBSPType BSPType)
 *******************************************************************************/
 void CanSend(uint8_t *pTxData, uint16_t size)
 {
-    uint32_t     i,iLimit;
+    uint32_t     i, iLimit;
     tCANData     TxData;
     uint16_t     tempindex = 0;
     uint16_t     loop8Bytes;
@@ -131,11 +134,12 @@ void CanSend(uint8_t *pTxData, uint16_t size)
 
     loop8Bytes = size / CAN_MAX_DATA_LENGTH;
 
-    do{
+    do
+    {
         TxData.Word[0] = 0U;
         TxData.Word[1] = 0U;
 
-        if(loop8Bytes)
+        if (loop8Bytes)
         {
             loop8Bytes--;
             iLimit = CAN_MAX_DATA_LENGTH;
@@ -144,16 +148,17 @@ void CanSend(uint8_t *pTxData, uint16_t size)
             iLimit = size % CAN_MAX_DATA_LENGTH;
         }
 
-        for(i = 0U; i< iLimit; i++)
+        for (i = 0U; i< iLimit; i++)
         {
             TxData.Byte[i] = pTxData[tempindex++];
         }
 
         /** Setup busy wait timer */
         canWait = BootTIMEOUT;
-        while((CAN->TSR & CAN_TSR_TME0) == 0)
+        while ((CAN->TSR & CAN_TSR_TME0) == 0)
         {
-            if(!(canWait--))
+            canWait--;
+            if (0U == canWait)
             {
                 return;        /** Return if the busy wait timer expires */
             }
@@ -171,9 +176,10 @@ void CanSend(uint8_t *pTxData, uint16_t size)
         CAN->sTxMailBox[0].TIR |= CAN_TI0R_TXRQ;
         /** Setup busy wait timer for transmission */
         canWait = BootTIMEOUT;
-        while((CAN->TSR & CAN_TSR_RQCP0) == 0)
+        while ((CAN->TSR & CAN_TSR_RQCP0) == 0)
         {
-            if(!(canWait--))
+            canWait--;
+            if (0U == canWait)
             {
                 return;        /** Return if the busy wait timer expires */
             }
@@ -182,7 +188,7 @@ void CanSend(uint8_t *pTxData, uint16_t size)
         CAN->TSR |= CAN_TSR_RQCP0;
 
         size -= iLimit;
-    }while(size);
+    }while (size);
 }
 
 /******************************************************************************/
@@ -207,13 +213,13 @@ eFUNCTION_RETURN CanRecv(uint8_t *pRxData, const uint16_t size)
     uint32_t    i;
     tCANData     RxData;
 
-    if((CAN->RF0R & CAN_RF0R_FMP0) != 0U)
+    if ((CAN->RF0R & CAN_RF0R_FMP0) != 0U)
     {
         /** Read the FIFO */
         RxData.Word[0] = CAN->sFIFOMailBox[0].RDLR;
         RxData.Word[1] = CAN->sFIFOMailBox[0].RDHR;
         /** Get the ID from the receive mailbox fifo */
-        if((CAN->sFIFOMailBox[0].RIR & CAN_RI0R_IDE) == 0)
+        if ((CAN->sFIFOMailBox[0].RIR & CAN_RI0R_IDE) == 0)
         {
             temp32U = CAN->sFIFOMailBox[0].RIR >> 21U;
         }else
@@ -221,7 +227,7 @@ eFUNCTION_RETURN CanRecv(uint8_t *pRxData, const uint16_t size)
             temp32U = CAN->sFIFOMailBox[0].RIR >> 3U;
         }
         /** Check if ID is matching our ID */
-        if(temp32U != BSP_TARGET_CAN_ID_BASE)
+        if (temp32U != BSP_TARGET_CAN_ID_BASE)
         {
             // retVal = eFunction_Error;
         }else
@@ -230,14 +236,14 @@ eFUNCTION_RETURN CanRecv(uint8_t *pRxData, const uint16_t size)
             temp32U = CAN->sFIFOMailBox[0].RDTR & 0x000FU;
 
             /** The number of bytes should not be more than 8 bytes */
-            if(temp32U <= CAN_MAX_DATA_LENGTH)
+            if (temp32U <= CAN_MAX_DATA_LENGTH)
             {
-                for(i = 0; i < temp32U; i++)
+                for (i = 0; i < temp32U; i++)
                 {
                     pRxData[index] = RxData.Byte[i];
                     index++;
                     /** If we have received all expected bytes */
-                    if(index >= size)
+                    if (index >= size)
                     {
                         /** Reset counter and exit successfully */
                         index = 0;

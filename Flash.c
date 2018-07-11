@@ -2,7 +2,7 @@
 /**
 * @file Flash.c
 * @brief Implement Flash driver
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 /* ***************** Header / include files ( #include ) **********************/
 #include <stddef.h>
@@ -25,7 +25,7 @@ static tFlashLimits FlashSettings;
 *******************************************************************************/
 void FlashInit(tBSPType BSPType)
 {
-    if(BSPType == BSP_Pilot)
+    if (BSPType == BSP_Pilot)
     {
         FlashSettings.CRCinFlash = BSP_ABSOLUTE_FLASH_END_16KB - 4UL;
         FlashSettings.LENinFlash = BSP_ABSOLUTE_FLASH_END_16KB - 2UL;
@@ -60,28 +60,29 @@ uint8_t FlashWrite(uint8_t* buf, const uint16_t size, const uint16_t pktNo)
      *    Size should be a non zero number less than 1025 and should be a multiple
      *     of two since we write 2 bytes.
      */
-    if((size > 1024UL) || (size == 0) || (buf == NULL))
+    if ((size > 1024UL) || (size == 0) || (buf == NULL))
     {
         return 0;
     }
     // Program Flash Page
     FLASH->SR |= FLASH_SR_PGERR | FLASH_SR_WRPRTERR;
-    while(i < size)
+    while (i < size)
     {
         FLASH->CR |= FLASH_CR_PG;
         *p16++ = (uint16_t)(buf[i+1] << 8) | buf[i];
         /* Reload the busy wait timeout */
         flashWait = BootTIMEOUT;
-        while((FLASH->SR & FLASH_SR_BSY) != 0)
+        while ((FLASH->SR & FLASH_SR_BSY) != 0)
         {
-            if(!(flashWait--))
+            flashWait--;
+            if (0U == flashWait)
             {
                 /** Return if the busy wait timer expires */
                 return 0;
             }
         }
         FLASH->CR &= ~FLASH_CR_PG;
-        if((FLASH->SR & (FLASH_SR_PGERR | FLASH_SR_WRPRTERR)) != 0)
+        if ((FLASH->SR & (FLASH_SR_PGERR | FLASH_SR_WRPRTERR)) != 0)
         {
             FLASH->SR |= FLASH_SR_PGERR | FLASH_SR_WRPRTERR;
             return 0;
@@ -91,9 +92,9 @@ uint8_t FlashWrite(uint8_t* buf, const uint16_t size, const uint16_t pktNo)
     /** Lets verify flash if we have written correctly */
     i = 0;
     p16 = (uint16_t *)(BSP_ABSOLUTE_APP_START + (pktNo * size));
-    while(i < size)
+    while (i < size)
     {
-        if(*p16++ != ((uint16_t)(buf[i+1] << 8) | buf[i]))
+        if (*p16++ != ((uint16_t)(buf[i+1] << 8) | buf[i]))
         {
             return 0;
         }
@@ -120,14 +121,15 @@ uint8_t FlashErase(void)
     // Unlock Flash
     FLASH->KEYR = FLASH_KEY1;
     FLASH->KEYR = FLASH_KEY2;
-    while((FLASH->CR & FLASH_CR_LOCK) != 0)
+    while ((FLASH->CR & FLASH_CR_LOCK) != 0)
     {
-        if(!(flashWait--))
+        flashWait--;
+        if (0U == flashWait)
         {
             return 0;
         }
     }
-    for(uint8_t i = 0; i < FlashSettings.TOTALPages; i++)
+    for (uint8_t i = 0; i < FlashSettings.TOTALPages; i++)
     {
         FLASH->SR |= FLASH_SR_PGERR | FLASH_SR_WRPRTERR;
         FLASH->CR |= FLASH_CR_PER;
@@ -135,15 +137,16 @@ uint8_t FlashErase(void)
         FLASH->CR |= FLASH_CR_STRT;
         /** Reload the busy wait time out */
         flashWait = BootTIMEOUT;
-        while((FLASH->SR & FLASH_SR_BSY) != 0)
+        while ((FLASH->SR & FLASH_SR_BSY) != 0)
         {
-            if(!(flashWait--))
+            flashWait--;
+            if (0U == flashWait)
             {
                 return 0;
             }
         }
         FLASH->CR &= ~FLASH_CR_PER;
-        if((FLASH->SR & (FLASH_SR_PGERR | FLASH_SR_WRPRTERR)) != 0)
+        if ((FLASH->SR & (FLASH_SR_PGERR | FLASH_SR_WRPRTERR)) != 0)
         {
             FLASH->SR |= FLASH_SR_PGERR | FLASH_SR_WRPRTERR;
             return 0;
@@ -184,15 +187,16 @@ uint8_t FlashWriteFWParam(tFIRMWARE_PARAM fwParam)
     /* Write FW CRC */
     FLASH->CR |= FLASH_CR_PG;
     *ad = (uint16_t)fwParam.u16FWCRC;
-    while((FLASH->SR & FLASH_SR_BSY) != 0)
+    while ((FLASH->SR & FLASH_SR_BSY) != 0)
     {
-        if(!(flashWait--))
+        flashWait--;
+        if (0U == flashWait)
         {
             return 0;
         }
     }
     FLASH->CR &= ~FLASH_CR_PG;
-    if((FLASH->SR & (FLASH_SR_PGERR | FLASH_SR_WRPRTERR)) != 0)
+    if ((FLASH->SR & (FLASH_SR_PGERR | FLASH_SR_WRPRTERR)) != 0)
     {
         FLASH->SR |= FLASH_SR_PGERR | FLASH_SR_WRPRTERR;
         return 0;
@@ -202,15 +206,16 @@ uint8_t FlashWriteFWParam(tFIRMWARE_PARAM fwParam)
     FLASH->CR |= FLASH_CR_PG;
         flashWait = BootTIMEOUT;
     *ad = (uint16_t)fwParam.u16FWLen;
-    while((FLASH->SR & FLASH_SR_BSY) != 0)
+    while ((FLASH->SR & FLASH_SR_BSY) != 0)
     {
-        if(!(flashWait--))
+        flashWait--;
+        if (0U == flashWait)
         {
             return 0;
         }
     }
     FLASH->CR &= ~FLASH_CR_PG;
-    if((FLASH->SR & (FLASH_SR_PGERR | FLASH_SR_WRPRTERR)) != 0)
+    if ((FLASH->SR & (FLASH_SR_PGERR | FLASH_SR_WRPRTERR)) != 0)
     {
         FLASH->SR |= FLASH_SR_PGERR | FLASH_SR_WRPRTERR;
         return 0;
@@ -218,12 +223,12 @@ uint8_t FlashWriteFWParam(tFIRMWARE_PARAM fwParam)
 
     /** Now start verification immidiately */
     ad = (uint16_t*)FlashSettings.CRCinFlash;
-    if(*ad != fwParam.u16FWCRC)
+    if (*ad != fwParam.u16FWCRC)
     {
         return 0;
     }
     ad = (uint16_t*)FlashSettings.LENinFlash;
-    if(*ad != fwParam.u16FWLen)
+    if (*ad != fwParam.u16FWLen)
     {
         return 0;
     }
@@ -253,20 +258,20 @@ uint8_t FlashVerifyFirmware(void)
     /* Read from FLASH_CRC_LENGTH_ADDRESS the firmware crc and length from host */
 
     /** Check if the length is within flash range or the read flash will fail */
-    if(lenFromHost > (FlashSettings.CRCinFlash - BSP_ABSOLUTE_APP_START))
+    if (lenFromHost > (FlashSettings.CRCinFlash - BSP_ABSOLUTE_APP_START))
     {
         return 0;
     }
 
     /* Calculate local crc */
-    while(i < lenFromHost)
+    while (i < lenFromHost)
     {
         /* Read from address of the firmware and calculate crc */
         dataByte = *fwar++;
         CRCtemp = CRCCalc16((uint8_t *)&dataByte, 2, CRCtemp);
         i += 2;
     }
-    if(CRCtemp == crcFromHost)
+    if (CRCtemp == crcFromHost)
     {
         return 1;
     }

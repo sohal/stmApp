@@ -1,9 +1,8 @@
-
 /******************************************************************************/
 /**
 * @file Protocol.c
 * @brief Implement State machine for protocol handling of bootloader
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 
 /* ***************** Header / include files ( #include ) **********************/
@@ -43,7 +42,7 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
     static uint32_t tickCounter = 0U;
     static uint32_t stickyTimer = 0U;
 
-    switch(stateNow)
+    switch (stateNow)
     {
         case eDefaultState:
             // if(pBSP->pRecv(Command.bufferCMD, 2) == eFunction_Ok)
@@ -67,18 +66,18 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
             //         stateNext = eDefaultState;
             //     }
             // }
-            if(eFunction_Ok == pBSP->pRecv(Payload.bufferPLD, 5U))
+            if (eFunction_Ok == pBSP->pRecv(Payload.bufferPLD, 5U))
             {
                 pBSP->pSend("Hello", 4);
             }
             break;
 
         case eFlashEraseCMD:
-            if(pBSP->pRecv(Command.bufferCMD, 2) == eFunction_Ok)
+            if (pBSP->pRecv(Command.bufferCMD, 2) == eFunction_Ok)
             {
-                if(Command.receivedvalue == eCMD_EraseFlash)
+                if (Command.receivedvalue == eCMD_EraseFlash)
                 {
-                    if(FlashErase())
+                    if (FlashErase())
                     {
                         stateNext = eWriteMemory;
                         Command.returnValue = eRES_OK;
@@ -92,9 +91,9 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
             break;
 
         case eWriteMemory:
-            if(pBSP->pRecv(Command.bufferCMD, 2) == eFunction_Ok)
+            if (pBSP->pRecv(Command.bufferCMD, 2) == eFunction_Ok)
             {
-                if(Command.receivedvalue == eCMD_WriteMemory)
+                if (Command.receivedvalue == eCMD_WriteMemory)
                 {
                     stateNext = ePayloadReceive;
                     Payload.packet.u16SeqCnt = 0xFFFFU;
@@ -107,28 +106,28 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
 
         case ePayloadReceive:
             retVal = pBSP->pRecv(Payload.bufferPLD, sizeof(tPldUnion));
-            if((pktCounter == Payload.packet.u16SeqCnt) && (retVal == eFunction_Ok))
+            if ((pktCounter == Payload.packet.u16SeqCnt) && (retVal == eFunction_Ok))
             {
                 stateNext = ePayloadCheck;
                 tickCounter = 0;
             }
 
-            if(Payload.packet.u16CRC == 0xFFFFU)
+            if (Payload.packet.u16CRC == 0xFFFFU)
             {
-                if(Payload.packet.u16SeqCnt == 0xFFFFU)
+                if (Payload.packet.u16SeqCnt == 0xFFFFU)
                 {
-                    if(Payload.packet.u8Data[0] == (uint8_t)(eCMD_WriteCRC & 0x00FFU))
+                    if (Payload.packet.u8Data[0] == (uint8_t)(eCMD_WriteCRC & 0x00FFU))
                     {
-                        if(Payload.packet.u8Data[1] == (uint8_t)((eCMD_WriteCRC >> 8) & 0x00FFU))
+                        if (Payload.packet.u8Data[1] == (uint8_t)((eCMD_WriteCRC >> 8) & 0x00FFU))
                         {
-                            if(tickCounter > pBSP->TwoBytesTicks)
+                            if (tickCounter > pBSP->TwoBytesTicks)
                             {
                                 AppData.Firmware.u16FWCRC = 0xFFFFU;
                                 AppData.Firmware.u16FWLen = 0xFFFFU;
                                 stateNext = eWriteAppCRC;
                                 pBSP->pReset();
                                 Command.returnValue = eRES_OK;
-                                pBSP->pSend(Command.bufferCMD,2);
+                                pBSP->pSend(Command.bufferCMD, 2);
                             }else
                             {
                                 tickCounter++;
@@ -140,10 +139,10 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
             break;
 
         case ePayloadCheck:
-            crcCalculated = CRCCalc16(Payload.packet.u8Data,64, 0);
-            if(crcCalculated == Payload.packet.u16CRC)
+            crcCalculated = CRCCalc16(Payload.packet.u8Data, 64, 0);
+            if (crcCalculated == Payload.packet.u16CRC)
             {
-                if(FlashWrite(Payload.bufferPLD, BLOCK_SIZE, pktCounter))
+                if (FlashWrite(Payload.bufferPLD, BLOCK_SIZE, pktCounter))
                 {
                         Command.returnValue = eRES_OK;
                         pktCounter++;
@@ -162,22 +161,22 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
 
         case eWriteAppCRC:
             retVal = pBSP->pRecv(AppData.bufferData, 4);
-            if(retVal == eFunction_Ok)
+            if (retVal == eFunction_Ok)
             {
                 Command.returnValue = eRES_Error;
-                if(FlashWriteFWParam(AppData.Firmware))
+                if (FlashWriteFWParam(AppData.Firmware))
                 {
                     stateNext = eFinishUpdate;
                     pBSP->pReset();
                     Command.returnValue = eRES_OK;
                 }
-                pBSP->pSend(Command.bufferCMD,2);
+                pBSP->pSend(Command.bufferCMD, 2);
             }
             break;
 
         case eFinishUpdate:
             retVal = pBSP->pRecv(Command.bufferCMD, 2);
-            if((retVal == eFunction_Ok) && (Command.receivedvalue == eCMD_Finish))
+            if ((retVal == eFunction_Ok) && (Command.receivedvalue == eCMD_Finish))
             {
                 stateNext = eFlashVerifyApplication;
             }
@@ -185,7 +184,7 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
 
         case eFlashVerifyApplication:
             Command.returnValue = eRES_Abort;
-            if(FlashVerifyFirmware())
+            if (FlashVerifyFirmware())
             {
                 Command.returnValue = eRES_OK;
                 stateNext = eStartAppCMD;
@@ -200,13 +199,15 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
         case eStartAppCMD:
             /** Busy wait for some time */
             tickCounter = pBSP->CommDoneTicks;
-            do{
-            }while(tickCounter--);
+            do
+            {
+                __NOP();
+            }while (tickCounter--);
 
             /* Lock flash from further write */
             FlashLock();
             /* Remap Application Vectors */
-            for(int i = 0; i < BSP_APP_VECTOR_SIZE_WORDS; i++)
+            for (int i = 0; i < BSP_APP_VECTOR_SIZE_WORDS; i++)
             {
                 AppVectorsInRAM[i] = AppVectorsInFlash[i];
             }
@@ -221,7 +222,9 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
             break;
 
         default:
-            /* We will never come here if all is OK, nevertheless we restore state machine to default state */
+            /* We will never come here if all is OK,
+             * nevertheless we restore state machine to default state
+             */
             stateNext = eDefaultState;
             break;
     }
@@ -230,11 +233,11 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
      * hung state. We can count the stickyness of the software and reset
      * to a known state.
      */
-    if(stateNext == stateNow)
+    if (stateNext == stateNow)
     {
         stickyTimer++;
         /* If the timeout has expired, we reboot the system */
-        if(stickyTimer > pBSP->BootTimeoutTicks)
+        if (stickyTimer > pBSP->BootTimeoutTicks)
         {
             stateNext = eDefaultState;
             //NVIC_SystemReset();
@@ -248,5 +251,5 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
 
     stateNow = stateNext;
 
-    return(retVal);
+    return (retVal);
 }

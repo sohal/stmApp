@@ -2,7 +2,7 @@
 /**
 * @file CRC.c
 * @brief CRC16 checksum calculator
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 /* ***************** Header / include files ( #include ) **********************/
 #include "CRC.h"
@@ -28,11 +28,11 @@ uint16_t CRCCalc16(const uint8_t *data, uint16_t size, uint16_t startVal)
     uint16_t out = startVal;
     uint8_t bits_read = 0, bit_flag;
     /* Sanity check */
-    if(data == NULL)
+    if (data == NULL)
     {
         return 0;
     }
-    while(size > 0)
+    while (size > 0)
     {
         bit_flag = out >> 15;
         /* Get next bit */
@@ -40,14 +40,14 @@ uint16_t CRCCalc16(const uint8_t *data, uint16_t size, uint16_t startVal)
         out |= (*data >> (7 - bits_read)) & 1;
         /* Increment bit counter */
         bits_read++;
-        if(bits_read > 7)
+        if (bits_read > 7)
         {
             bits_read = 0;
             data++;
             size--;
         }
         /* Cycle check */
-        if(bit_flag)
+        if (bit_flag)
         {
             out ^= CRC16;
         }

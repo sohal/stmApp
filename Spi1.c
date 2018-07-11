@@ -2,7 +2,7 @@
 /**
 * @file Spi1.c
 * @brief Implement SPI1
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 
 /* ***************** Header / include files ( #include ) **********************/
@@ -32,12 +32,24 @@ void Spi1Init(tBSPType BSPType)
 {
     RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 
-    GPIOA->AFR[GPIO_PIN_5 >> 3] &= ~((uint32_t)0xF << ((uint32_t)(((uint32_t)GPIO_PIN_5) & (uint32_t)0x07) * 4));
-    GPIOA->AFR[GPIO_PIN_5 >> 3] |= ((uint32_t)(GPIO_AF_0) << ((uint32_t)(((uint32_t)GPIO_PIN_5) & (uint32_t)0x07) * 4));
-    GPIOA->AFR[GPIO_PIN_6 >> 3] &= ~((uint32_t)0xF << ((uint32_t)(((uint32_t)GPIO_PIN_6) & (uint32_t)0x07) * 4));
-    GPIOA->AFR[GPIO_PIN_6 >> 3] |= ((uint32_t)(GPIO_AF_0) << ((uint32_t)(((uint32_t)GPIO_PIN_6) & (uint32_t)0x07) * 4));
-    GPIOA->AFR[GPIO_PIN_7 >> 3] &= ~((uint32_t)0xF << ((uint32_t)(((uint32_t)GPIO_PIN_7) & (uint32_t)0x07) * 4));
-    GPIOA->AFR[GPIO_PIN_7 >> 3] |= ((uint32_t)(GPIO_AF_0) << ((uint32_t)(((uint32_t)GPIO_PIN_7) & (uint32_t)0x07) * 4));
+    GPIOA->AFR[GPIO_PIN_5 >> 3] &= ~((uint32_t)0xF <<
+                                    ((uint32_t)(((uint32_t)GPIO_PIN_5) &
+                                    (uint32_t)0x07) * 4));
+    GPIOA->AFR[GPIO_PIN_5 >> 3] |= ((uint32_t)(GPIO_AF_0) <<
+                                    ((uint32_t)(((uint32_t)GPIO_PIN_5) &
+                                    (uint32_t)0x07) * 4));
+    GPIOA->AFR[GPIO_PIN_6 >> 3] &= ~((uint32_t)0xF <<
+                                    ((uint32_t)(((uint32_t)GPIO_PIN_6) &
+                                    (uint32_t)0x07) * 4));
+    GPIOA->AFR[GPIO_PIN_6 >> 3] |= ((uint32_t)(GPIO_AF_0) <<
+                                    ((uint32_t)(((uint32_t)GPIO_PIN_6) &
+                                    (uint32_t)0x07) * 4));
+    GPIOA->AFR[GPIO_PIN_7 >> 3] &= ~((uint32_t)0xF <<
+                                    ((uint32_t)(((uint32_t)GPIO_PIN_7) &
+                                    (uint32_t)0x07) * 4));
+    GPIOA->AFR[GPIO_PIN_7 >> 3] |= ((uint32_t)(GPIO_AF_0) <<
+                                    ((uint32_t)(((uint32_t)GPIO_PIN_7) &
+                                    (uint32_t)0x07) * 4));
 
     GPIOA->OSPEEDR &= ~(GPIO_OSPEEDER_OSPEEDR0 << (GPIO_PIN_5 * 2));
     GPIOA->OSPEEDR |= ((uint32_t)GPIO_Speed_Level_3 << (GPIO_PIN_5 * 2));
@@ -92,9 +104,12 @@ void Spi1Send(uint8_t *pTxData, uint16_t size)
 {
     uint16_t i = 0U;
 
-    while(i < size)
+    while (i < size)
     {
-        while((SPI1->SR & SPI_SR_TXE) == 0);
+        while ((SPI1->SR & SPI_SR_TXE) == 0)
+        {
+            __NOP();
+        }
         SPI1->DR = pTxData[i++];
     }
 }
@@ -117,7 +132,7 @@ eFUNCTION_RETURN Spi1Recv(uint8_t *pRxData, uint16_t size)
     eFUNCTION_RETURN retVal = eFunction_Timeout;
     uint8_t tmp = 0;
 
-    if(SPI1->SR & SPI_SR_RXNE)
+    if (SPI1->SR & SPI_SR_RXNE)
     {
         if ((SPI1->SR & SPI_SR_RXNE) != 0)
         {
@@ -130,7 +145,7 @@ eFUNCTION_RETURN Spi1Recv(uint8_t *pRxData, uint16_t size)
         }
     }
     (void)tmp;
-    if(index >= size)
+    if (index >= size)
     {
         index = 0;
         retVal = eFunction_Ok;

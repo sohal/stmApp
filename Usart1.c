@@ -2,7 +2,7 @@
 /**
 * @file Usart1.c
 * @brief Implement usart1
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 
 /* ***************** Header / include files ( #include ) **********************/
@@ -36,7 +36,7 @@ void Usart1Init(tBSPType BSPType)
 {
     RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 
-    switch(BSPType)
+    switch (BSPType)
     {
         case BSP_Pilot:
             TxPin = BSP_PILOT_UART_TX_PIN;
@@ -95,9 +95,12 @@ void Usart1Init(tBSPType BSPType)
 void Usart1Send(uint8_t *pTxData, const uint16_t size)
 {
     uint16_t i = 0U;
-    while(i < size)
+    while ( i < size)
     {
-        while((USART1->ISR & USART_ISR_TXE) == 0);
+        while ((USART1->ISR & USART_ISR_TXE) == 0)
+        {
+            __NOP();
+        }
         USART1->TDR = pTxData[i++];
     }
 }
@@ -121,13 +124,13 @@ eFUNCTION_RETURN Usart1Recv(uint8_t *pRxData, const uint16_t size)
 {
     eFUNCTION_RETURN retVal = eFunction_Timeout;
 
-    if(USART1->ISR & USART_ISR_RXNE)
+    if (USART1->ISR & USART_ISR_RXNE)
     {
         pRxData[index] = USART1->RDR;
         index++;
     }
 
-    if(index >= size)
+    if (index >= size)
     {
         index = 0;
         retVal = eFunction_Ok;
@@ -150,4 +153,3 @@ inline void Usart1Reset(void)
 }
 
 #endif
-

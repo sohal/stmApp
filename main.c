@@ -2,7 +2,7 @@
 /**
 * @file main.c
 * @brief Main calling sequence for bootloader.
-*
+* Copyright Kodezine UG 2018
 ******************************************************************************/
 /* ***************** Header / include files ( #include ) **********************/
 #include "BSP.h"
@@ -20,7 +20,7 @@ int main (void)
 {
     tBSPStruct* pBSP = BSP_Init();
 
-    for(;;)
+    for (;;)
     {
         ProtocolSM_Run(pBSP);
     }

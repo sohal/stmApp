@@ -2,7 +2,7 @@
 /**
 * @file BSP.c
 * @brief Implement BSP (board support package) layer
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 /* ***************** Header / include files ( #include ) **********************/
 #include <stddef.h>
@@ -61,7 +61,7 @@ tBSPStruct* BSP_Init(void)
     #error Select a valid board type
     uint32_t temp_u32 = DBGMCU->IDCODE;
 
-    if((temp_u32 & DBGMCU_IDCODE_DEV_ID) != DBGMCU_ID_F03x)
+    if ((temp_u32 & DBGMCU_IDCODE_DEV_ID) != DBGMCU_ID_F03x)
     {
         /* Make BSP config for F04x, Interface is always CAN */
         gIF.BSP_Type = BSP_CAN;
@@ -81,13 +81,13 @@ tBSPStruct* BSP_Init(void)
 
         temp_u32 = BSP_CHECK_PORT->IDR;
 
-        if(temp_u32 & (MASK_BIT_6))
+        if (temp_u32 & (MASK_BIT_6))
         {
             /* Pin 6 is high only for Watchdog */
             gIF.BSP_Type = BSP_ExtWatchdog;
         }else
         {
-            if(temp_u32 & (MASK_BIT_7))
+            if (temp_u32 & (MASK_BIT_7))
             {
                 /* Pin 7 is high only for Pilot */
                 gIF.BSP_Type = BSP_Pilot;
@@ -99,7 +99,7 @@ tBSPStruct* BSP_Init(void)
         }
     }
 #endif
-    switch(gIF.BSP_Type)
+    switch (gIF.BSP_Type)
     {
         case BSP_Pilot:
             gIF.pInit   = &Usart1Init;
@@ -153,7 +153,7 @@ tBSPStruct* BSP_Init(void)
 
     FlashInit(gIF.BSP_Type);
 
-    return(&gIF);
+    return (&gIF);
 }
 /******************************************************************************/
 /**
@@ -164,11 +164,16 @@ void TorqueSensorCoreClockInit(void)
 *******************************************************************************/
 void TorqueSensorCoreClockInit(void)
 {
-    RCC->CR |= ((uint32_t)RCC_CR_HSION);                       /* Enable HSI */
-    while ((RCC->CR & RCC_CR_HSIRDY) == 0);                  /* Wait for HSI Ready */
-
+    RCC->CR |= ((uint32_t)RCC_CR_HSION);                     /* Enable HSI */
+    while ((RCC->CR & RCC_CR_HSIRDY) == 0)
+    {
+        __NOP();                                             /* Wait for HSI Ready */
+    }
     RCC->CFGR = RCC_CFGR_SW_HSI;                             /* HSI is system clock */
-    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_HSI);  /* Wait for HSI used as system clock */
+    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_HSI)
+    {
+        __NOP();                                             /* Wait for HSI used as system clock */
+    }
 
     FLASH->ACR  = FLASH_ACR_PRFTBE;                          /* Enable Prefetch Buffer */
     FLASH->ACR |= FLASH_ACR_LATENCY;                         /* Flash 1 wait state */
@@ -183,10 +188,15 @@ void TorqueSensorCoreClockInit(void)
     RCC->CFGR |=  (RCC_CFGR_PLLSRC_HSI_DIV2 | RCC_CFGR_PLLMUL16);  /* 16 for 64Mhz */
 
     RCC->CR |= RCC_CR_PLLON;                                 /* Enable PLL */
-    while((RCC->CR & RCC_CR_PLLRDY) == 0) __NOP();           /* Wait till PLL is ready */
+    while ((RCC->CR & RCC_CR_PLLRDY) == 0)
+    {
+        __NOP();                                             /* Wait till PLL is ready */
+    }
 
     RCC->CFGR &= ~RCC_CFGR_SW;                               /* Select PLL as system clock source */
     RCC->CFGR |=  RCC_CFGR_SW_PLL;
-    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL);  /* Wait till PLL is system clock src */
+    while ((RCC->CFGR & RCC_CFGR_SWS) != RCC_CFGR_SWS_PLL)
+    {
+        __NOP();                                            /* Wait till PLL is system clock src */
+    }
 }
-
