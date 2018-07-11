@@ -1,9 +1,8 @@
-
 /******************************************************************************/
 /**
 * @file Protocol.h
 * @brief Header file for state machine for bootloader protocol
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
@@ -18,23 +17,30 @@
 #include "BSP.h"
 /* *************** Constant / macro definitions ( #define ) *******************/
 /* ********************* Type definitions ( typedef ) *************************/
-typedef union myCmd{
+union myCmd
+{
     uint8_t         bufferCMD[2];
     eRESPONSE_ID    returnValue;
     eCOMMAND_ID     receivedvalue;
-}tCmdUnion;
+};
+typedef union myCmd tCmdUnion;
 
-typedef union myPayload{
+union myPayload
+{
     tDATA_PACKET    packet;
     uint8_t         bufferPLD[68];
-}tPldUnion;
+};
+typedef union myPayload tPldUnion;
 
-typedef union myAppData{
+union myAppData
+{
     tFIRMWARE_PARAM Firmware;
     uint8_t         bufferData[4];
-}tAppDataUnion;
+};
+typedef union myAppData tAppDataUnion;
 
-typedef enum {
+enum myProtoState
+{
     eDefaultState = 0,
     eFlashEraseCMD,
     eWriteMemory,
@@ -44,7 +50,8 @@ typedef enum {
     eFinishUpdate,
     eFlashVerifyApplication,
     eStartAppCMD
-}tProtoState;
+};
+typedef enum myProtoState tProtoState;
 /* ***************** Global data declarations ( extern ) **********************/
 /* ***** External parameter / constant declarations ( extern const ) **********/
 /* ********************** Global func/proc prototypes *************************/

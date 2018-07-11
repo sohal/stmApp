@@ -2,7 +2,7 @@
 /**
 * @file BSP.h
 * @brief Implement BSP
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 #ifndef BSP_H_
 #define BSP_H_
@@ -18,11 +18,12 @@
 #define DBGMCU_ID_F04x                      (0x00000445UL)
 #define DBGMCU_ID_F03x                      (0x00000444UL)
 
-/** Constants related to Program flash in the µC */
+/** Constants related to Program flash in the ï¿½C */
 #define BSP_ABSOLUTE_FLASH_START            (0x08000000UL)  /** Start address of Program Flash */
-#define BSP_FLASH_PAGE_SIZE_BYTES           (0x400UL)       /** Page size of Program Flash in bytes */
+#define BSP_FLASH_PAGE_SIZE_BYTES           (0x400UL)       /** Page size of Program Flash in
+                                                             ** bytes */
 
-/** Constants related to SRAM in the µC */
+/** Constants related to SRAM in the ï¿½C */
 #define BSP_ABSOLUTE_SRAM_START             (0x20000000UL)  /** Start address of SRAM */
 
 /** Constants related to relocation of interrupt vectors of application in SRAM */
@@ -43,7 +44,8 @@
 /** End of Flash address in STM32F031G4U6 */
 #define BSP_ABSOLUTE_FLASH_END_16KB         (0x08004000UL)
 /** Total flash sectors to be erased in 16kB flash for application space (0x0C)*/
-#define BSP_APP_PROGRAM_PAGES_16KB          ((BSP_FLASH_MAX_SIZE_16KB - BSP_BOOTLOADER_MAX_SIZE) / BSP_FLASH_PAGE_SIZE_BYTES)
+#define BSP_APP_PROGRAM_PAGES_16KB          ((BSP_FLASH_MAX_SIZE_16KB - BSP_BOOTLOADER_MAX_SIZE) \
+                                             / BSP_FLASH_PAGE_SIZE_BYTES)
 
 /** Constants related to other targets using STM32F031G6U6 and STM32F042K6U6 with 32kB flash */
 /** Total capacity of Program Flash in STM32F031G6U6 and STM32F042K6U6 */
@@ -51,7 +53,8 @@
 /** End of Flash address in STM32F031G6U6 and STM32F042K6U6 */
 #define BSP_ABSOLUTE_FLASH_END_32KB         (0x08008000UL)
 /** Total flash sectors to be erased in 32kb flash for application space (0x1C) */
-#define BSP_APP_PROGRAM_PAGES_32KB          ((BSP_FLASH_MAX_SIZE_32KB - BSP_BOOTLOADER_MAX_SIZE) / BSP_FLASH_PAGE_SIZE_BYTES)
+#define BSP_APP_PROGRAM_PAGES_32KB          ((BSP_FLASH_MAX_SIZE_32KB - BSP_BOOTLOADER_MAX_SIZE) \
+                                             / BSP_FLASH_PAGE_SIZE_BYTES)
 
 /** Constants for interfaces */
 /** Interface Ports, Pins and configuration in Pilot for UART communication */
@@ -83,7 +86,8 @@
 #define BSP_CHECK_PIN_6                     (6U)
 #define BSP_CHECK_PIN_7                     (7U)
 /* ********************* Type definitions ( typedef ) *************************/
-typedef enum bsptype {
+typedef enum bsptype
+{
     BSP_Unknown,
     BSP_Pilot,
     BSP_TorqueSensor,
@@ -91,7 +95,8 @@ typedef enum bsptype {
     BSP_CAN
 }tBSPType;
 
-typedef struct  {
+struct BSPStruct_t
+{
     tBSPType BSP_Type;
     void (*pInit)(const tBSPType);
     void (*pSend)(uint8_t *, uint16_t);
@@ -101,7 +106,8 @@ typedef struct  {
     uint32_t AppStartTicks;
     uint32_t CommDoneTicks;
     uint32_t TwoBytesTicks;
-}tBSPStruct;
+};
+typedef struct BSPStruct_t tBSPStruct;
 /* ***************** Global data declarations ( extern ) **********************/
 /* ***** External parameter / constant declarations ( extern const ) **********/
 /* ********************** Global func/proc prototypes *************************/

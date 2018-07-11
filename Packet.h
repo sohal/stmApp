@@ -27,11 +27,12 @@ typedef struct
 * @struct tFIRMWARE_PARAM
 * @brief Two-byte CRC over the whole firmware and the length of firmware in bytes
 */
-typedef struct
+struct myFirmwareParams
 {
     uint16_t u16FWCRC;    /**< Two-byte CRC over firmware */
     uint16_t u16FWLen;    /**< Length of the firmware     */
-}tFIRMWARE_PARAM;
+};
+typedef struct myFirmwareParams tFIRMWARE_PARAM;
 
 /**
 * @enum ePACKET_STATUS

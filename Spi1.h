@@ -2,7 +2,7 @@
 /**
 * @file Spi1.h
 * @brief Implement SPI1
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 #ifndef SPI1_H
 #define SPI1_H

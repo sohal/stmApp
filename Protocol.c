@@ -68,7 +68,7 @@ eFUNCTION_RETURN ProtocolSM_Run(const tBSPStruct *pBSP)
             // }
             if (eFunction_Ok == pBSP->pRecv(Payload.bufferPLD, 5U))
             {
-                pBSP->pSend("Hello", 4);
+                pBSP->pSend((uint8_t*)"Hello", 4);
             }
             break;
 

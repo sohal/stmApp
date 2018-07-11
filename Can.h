@@ -2,7 +2,7 @@
 /**
 * @file Can.h
 * @brief Implement CAN
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 #ifndef CAN_H
 #define CAN_H
@@ -19,10 +19,12 @@
 /* ***************** Global data declarations ( extern ) **********************/
 /* ***** External parameter / constant declarations ( extern const ) **********/
 /* ********************** Global func/proc prototypes *************************/
-typedef union {
+union CANData_u
+{
     uint32_t    Word[2];
     uint8_t     Byte[8];
-}tCANData;
+};
+typedef union CANData_u tCANData;
 
 void CanInit(tBSPType BSPType);
 void CanSend(uint8_t *pTxData, uint16_t size);

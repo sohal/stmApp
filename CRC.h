@@ -2,7 +2,7 @@
 /**
 * @file CRC.h
 * @brief CRC16 checksum calculator
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 #ifndef CRC_H
 #define CRC_H

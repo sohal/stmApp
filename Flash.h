@@ -2,7 +2,7 @@
 /**
 * @file Flash.h
 * @brief Implement Flash driver
-*
+* Copyright Kodezine UG 2018
 *******************************************************************************/
 #ifndef FLASH_H
 #define FLASH_H
@@ -15,11 +15,13 @@
 #include "Packet.h"
 /* *************** Constant / macro definitions ( #define ) *******************/
 /* ********************* Type definitions ( typedef ) *************************/
-typedef struct myFlash{
+struct myFlash
+{
     uint32_t    CRCinFlash;
     uint32_t    LENinFlash;
     uint32_t    TOTALPages;
-}tFlashLimits;
+};
+typedef struct myFlash tFlashLimits;
 /* ***************** Global data declarations ( extern ) **********************/
 /* ***** External parameter / constant declarations ( extern const ) **********/
 /* ********************** Global func/proc prototypes *************************/
