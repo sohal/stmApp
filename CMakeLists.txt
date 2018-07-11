@@ -1,5 +1,6 @@
 # The CMake minimum version
 cmake_minimum_required(VERSION 3.5)
+set(CMAKE_VERBOSE_MAKEFILE OFF)
 # Include utilities
 include("${CMAKE_SOURCE_DIR}/utils.cmake")
 # The name of the project
@@ -157,5 +158,5 @@ add_vera_targets(
   ${BOOT_SRCS}
   ${BOOT_INCS}
   RECURSE
-  ROOT "/usr/local/lib/vera++/"
+  ROOT "${CMAKE_SOURCE_DIR}/vera++/"
 )
