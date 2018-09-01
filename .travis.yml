@@ -7,15 +7,11 @@ before_install:
 - sudo apt-get install -y gcc-arm-none-eabi
 - sudo apt-get install -y vera++
 
-compiler: 
-- gcc-arm-none-eabi
-
-
 addons:
   apt:
     update: true
 
 script:
-  - gcc-arm-none-eabi-gcc --version
+  - arm-none-eabi-gcc --version
   - cmake -H. -Bbuild
   - cmake --build build --
