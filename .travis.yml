@@ -1,6 +1,4 @@
 language: c
-compiler: 
-- gcc
 sudo: false
 os:
 - linux
@@ -9,10 +7,15 @@ before_install:
 - sudo apt-get install -y gcc-arm-none-eabi
 - sudo apt-get install -y vera++
 
+compiler: 
+- gcc-arm-none-eabi
+
+
 addons:
   apt:
     update: true
 
 script:
-- cmake -H. -Bbuild
-- cmake --build build --
+  - gcc-arm-none-eabi-gcc --version
+  - cmake -H. -Bbuild
+  - cmake --build build --
