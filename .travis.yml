@@ -12,6 +12,7 @@ addons:
     update: true
 
 script:
-  - arm-none-eabi-gcc --version
+  - which arm-none-eabi-gcc
+
   - cmake -H. -Bbuild
   - cmake --build build --
