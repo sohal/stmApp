@@ -7,7 +7,7 @@ include("${CMAKE_SOURCE_DIR}/utils.cmake")
 project( bootF072 ASM C )
 
 # The VERA++ with CMAKE
-find_package(vera++)
+# find_package(vera++)
 
 # Add library for stm32peripherals
 set (CMAKE_EXECUTABLE_SUFFIX ".elf")
@@ -153,10 +153,10 @@ add_custom_target(debug-server
 )
 
 # Vera++ custom target
-include (${VERA++_USE_FILE})
-add_vera_targets(
-  ${BOOT_SRCS}
-  ${BOOT_INCS}
-  RECURSE
-  ROOT "${CMAKE_SOURCE_DIR}/.vera++/"
-)
+#include (${VERA++_USE_FILE})
+#add_vera_targets(
+#  ${BOOT_SRCS}
+#  ${BOOT_INCS}
+#  RECURSE
+#  ROOT "${CMAKE_SOURCE_DIR}/.vera++/"
+#)
