@@ -12,7 +12,7 @@ addons:
     update: true
 
 script:
-  - which arm-none-eabi-gcc
-
-  - cmake -H. -Bbuild
-  - cmake --build build --
+  - cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=./cortexM0.cmake
+  - cd build
+  - make bootSPI
+  - make bootCAN
