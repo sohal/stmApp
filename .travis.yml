@@ -4,10 +4,11 @@ os:
 - linux
 
 before_install:
-- sudo apt-get install -y gcc-arm-none-eabi liblua5.1-0-dev
+- sudo apt-get install -y gcc-arm-none-eabi
 - git clone https://bitbucket.org/verateam/vera.git
 - cd vera
 - git submodule update --init
+- sed -i '1s/ON/OFF' ./src/lua.cmake
 - mkdir build
 - cd build
 - cmake ..
