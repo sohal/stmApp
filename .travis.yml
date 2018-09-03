@@ -5,7 +5,7 @@ os:
 
 before_install:
 - sudo apt-get install -y gcc-arm-none-eabi
-- cd ~
+- cd ..
 - git clone https://bitbucket.org/verateam/vera.git
 - cd vera
 - git submodule update --init
@@ -15,6 +15,7 @@ before_install:
 - cmake ..
 - make -j
 - sudo make install
+- vera++ --version
 - cd ~/build/sohal/stmApp
 
 addons:
