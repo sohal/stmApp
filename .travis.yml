@@ -8,7 +8,7 @@ before_install:
 - git clone https://bitbucket.org/verateam/vera.git
 - cd vera
 - git submodule update --init
-- sed -i '1s/ON/OFF' ./src/lua.cmake
+- sed -i '1s/ON/OFF/' ./src/lua.cmake
 - mkdir build
 - cd build
 - cmake ..
