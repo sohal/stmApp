@@ -5,6 +5,14 @@ os:
 
 before_install:
 - sudo apt-get install -y gcc-arm-none-eabi
+- git clone https://bitbucket.org/verateam/vera.git
+- cd vera
+- git submodule update --init
+- mkdir build
+- cd build
+- cmake ..
+- make -j
+- sudo make install
 
 addons:
   apt:
