@@ -15,7 +15,7 @@ before_install:
 - cmake ..
 - make -j
 - sudo make install
-- cd ~/sohal/stmApp
+- cd ~/build/sohal/stmApp
 
 addons:
   apt:
