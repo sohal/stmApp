@@ -19,8 +19,7 @@ if(NOT EXISTS "$ENV{ARM_GCC_ROOT_FOLDER}")
 else()
   set(TC_ROOT_FOLDER "$ENV{ARM_GCC_ROOT_FOLDER}")
 endif(NOT EXISTS "$ENV{ARM_GCC_ROOT_FOLDER}")
-# set(TC_ROOT_FOLDER "/home/p/opt/gcc4cortex")
-#set(TC_ROOT_FOLDER "/usr")
+
 # Specify cross compiler 
 set(CMAKE_C_COMPILER    ${TC_ROOT_FOLDER}/bin/${TC_PREFIX}gcc)
 set(CMAKE_CXX_COMPILER  ${TC_ROOT_FOLDER}/bin/${TC_PREFIX}g++)
