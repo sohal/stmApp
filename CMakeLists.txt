@@ -1,5 +1,7 @@
 # The CMake minimum version
 cmake_minimum_required(VERSION 3.12)
+set(CMAKE_SHARED_LIBRARY_LINK_C_FLAGS "")
+set(CMAKE_SHARED_LIBRARY_LINK_CXX_FLAGS "")
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 # The name of the project
 project(bootF072 ASM C)
