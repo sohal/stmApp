@@ -5,19 +5,8 @@ os:
 
 before_install:
 - sudo apt-get install -y gcc-arm-none-eabi
-- cd ..
-- git clone https://bitbucket.org/verateam/vera.git
-- cd vera
-- git submodule update --init
-- sed -i 's/ON/OFF/1' ./src/lua.cmake
-- mkdir build
-- cd build
-- cmake ..
-- make -j
-- sudo make install
-- vera++ --version
-- cd ~/build/sohal/stmApp
-
+- export ARM_GCC_ROOT_FOLDER=/usr
+- whereis arm-none-eabi-gcc
 addons:
   apt:
     update: true
