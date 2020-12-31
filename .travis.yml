@@ -4,24 +4,17 @@ os:
 - linux
 
 before_install:
-- sudo apt-get install -y gcc-arm-none-eabi
-- cd ..
-- git clone https://bitbucket.org/verateam/vera.git
-- cd vera
-- git submodule update --init
-- sed -i 's/ON/OFF/1' ./src/lua.cmake
-- mkdir build
-- cd build
-- cmake ..
-- make -j
-- sudo make install
-- vera++ --version
-- cd ~/build/sohal/stmApp
+  - cd ~
+  - mkdir ~/.compiler
+  - export ARM_GCC_ROOT_FOLDER=~/.compiler/gcc-arm-none-eabi-10-2020-q4-major
+  - wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
+  - tar -jxvf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 --directory ~/.compiler
+  - cd /home/travis/build/sohal/stmApp
 
 addons:
   apt:
     update: true
 
 script:
-  - cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=./cortexM0.cmake
+  - cmake -H. -Bbuild -DCMAKE_TOOLCHAIN_FILE=./cmake/cortexM0.cmake
   - cmake --build build --
