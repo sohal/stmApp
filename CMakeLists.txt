@@ -1,5 +1,5 @@
 # The CMake minimum version
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.12)
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 # The name of the project
 project(bootF072 ASM C)
