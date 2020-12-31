@@ -16,3 +16,11 @@ add_subdirectory("${CMAKE_BINARY_DIR}/vera-src"
                  "${CMAKE_BINARY_DIR}/vera-build"
 )
 
+# Vera++ custom target
+#include (${VERA++_USE_FILE})
+#add_vera_targets(
+#  ${BOOT_SRCS}
+#  ${BOOT_INCS}
+#  RECURSE
+#  ROOT "${CMAKE_SOURCE_DIR}/.vera++/"
+#)
