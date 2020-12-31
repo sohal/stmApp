@@ -5,10 +5,11 @@ os:
 
 before_install:
 
-  - mkdir .compiler
+  - mkdir ~/.compiler
   - export ARM_GCC_ROOT_FOLDER=~/.compiler/
   - wget https://developer.arm.com/-/media/Files/downloads/gnu-rm/10-2020q4/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2
   - tar -jxvf gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux.tar.bz2 --directory ~/.compiler
+  - cd /travis/s/stmApp
 
 addons:
   apt:
