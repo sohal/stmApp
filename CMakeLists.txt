@@ -1,36 +1,29 @@
 # The CMake minimum version
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.19)
 set(CMAKE_VERBOSE_MAKEFILE OFF)
 # Include utilities
-include("${CMAKE_SOURCE_DIR}/utils.cmake")
+include("${CMAKE_SOURCE_DIR}/cmake/utils.cmake")
 # The name of the project
 project( bootF072 ASM C )
 
 # The VERA++ with CMAKE
-find_package(vera++)
+#find_package(vera++)
 
 # Add library for stm32peripherals
 set (CMAKE_EXECUTABLE_SUFFIX ".elf")
 
+set (SRC_PATH "${CMAKE_SOURCE_DIR}/src")
+set (INC_PATH "${CMAKE_SOURCE_DIR}/inc")
 # Sources created by me
 set ( BOOT_SRCS
-    "${CMAKE_SOURCE_DIR}/main.c"
-    "${CMAKE_SOURCE_DIR}/BSP.c"
-    "${CMAKE_SOURCE_DIR}/Can.c"
-    "${CMAKE_SOURCE_DIR}/CRC.c"
-    "${CMAKE_SOURCE_DIR}/Flash.c"
-    "${CMAKE_SOURCE_DIR}/Protocol.c"
-    "${CMAKE_SOURCE_DIR}/Spi1.c"
-    "${CMAKE_SOURCE_DIR}/Usart1.c"
-)
-set ( BOOT_INCS
-    "${CMAKE_SOURCE_DIR}/BSP.h"
-    "${CMAKE_SOURCE_DIR}/Can.h"
-    "${CMAKE_SOURCE_DIR}/CRC.h"
-    "${CMAKE_SOURCE_DIR}/Flash.h"
-    "${CMAKE_SOURCE_DIR}/Protocol.h"
-    "${CMAKE_SOURCE_DIR}/Spi1.h"
-    "${CMAKE_SOURCE_DIR}/Usart1.h"
+    "${SRC_PATH}/main.c"
+    "${SRC_PATH}/BSP.c"
+    "${SRC_PATH}/Can.c"
+    "${SRC_PATH}/CRC.c"
+    "${SRC_PATH}/Flash.c"
+    "${SRC_PATH}/Protocol.c"
+    "${SRC_PATH}/Spi1.c"
+    "${SRC_PATH}/Usart1.c"
 )
 # All source files to be compiled along with startup code
 set ( SOURCES 
@@ -41,7 +34,7 @@ set ( SOURCES
 
 # The header includes
 include_directories( 
-    "${CMAKE_SOURCE_DIR}/"
+    "${INC_PATH}/"
     "${CMAKE_SOURCE_DIR}/1.5.0/CMSIS/Include"
     "${CMAKE_SOURCE_DIR}/1.5.0/Device/Include"
 )
@@ -153,10 +146,10 @@ add_custom_target(debug-server
 )
 
 # Vera++ custom target
-include (${VERA++_USE_FILE})
-add_vera_targets(
-  ${BOOT_SRCS}
-  ${BOOT_INCS}
-  RECURSE
-  ROOT "${CMAKE_SOURCE_DIR}/.vera++/"
-)
+#include (${VERA++_USE_FILE})
+#add_vera_targets(
+#  ${BOOT_SRCS}
+#  ${BOOT_INCS}
+#  RECURSE
+#  ROOT "${CMAKE_SOURCE_DIR}/.vera++/"
+#)

@@ -15,7 +15,7 @@ set(TC_PREFIX "arm-none-eabi-")
 # Specify location of toolchain root folder
 if(NOT EXISTS "$ENV{ARM_GCC_ROOT_FOLDER}")
   message("Could not find ARM_GCC_ROOT_FOLDER in environment ... checking for /usr")
-  set(TC_ROOT_FOLDER "/usr")
+  set(TC_ROOT_FOLDER "/home/s/.arm-none-gnu-eabihf/gcc-arm-none-eabi-10-2020-q4-major-x86_64-linux/gcc-arm-none-eabi-10-2020-q4-major")
 else()
   set(TC_ROOT_FOLDER "$ENV{ARM_GCC_ROOT_FOLDER}")
 endif(NOT EXISTS "$ENV{ARM_GCC_ROOT_FOLDER}")
