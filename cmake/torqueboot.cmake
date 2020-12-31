@@ -26,6 +26,7 @@ target_compile_definitions(usart PRIVATE
 # target executable
 add_executable(${PROJECT_NAME}	
 	${SRC_PATH}/main.c
+	${FRAMEWORK_SRC}
 )
 
 target_link_libraries(${PROJECT_NAME}

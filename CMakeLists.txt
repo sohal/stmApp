@@ -16,4 +16,6 @@ include(cmake/canboot.cmake)
 include(cmake/torqueboot.cmake)
 include(cmake/pilotboot.cmake)	
 
+# Include vera
+#include(cmake/vera++.cmake)
 
